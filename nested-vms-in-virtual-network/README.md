@@ -1,16 +1,5 @@
 # nested-vms-with-virtual-network-routing
 
-![Azure Public Test Date](https://azurequickstartsservice.blob.core.windows.net/badges/demos/nested-vms-in-virtual-network/PublicLastTestDate.svg)
-![Azure Public Test Result](https://azurequickstartsservice.blob.core.windows.net/badges/demos/nested-vms-in-virtual-network/PublicDeployment.svg)
-
-![Azure US Gov Last Test Date](https://azurequickstartsservice.blob.core.windows.net/badges/demos/nested-vms-in-virtual-network/FairfaxLastTestDate.svg)
-![Azure US Gov Last Test Result](https://azurequickstartsservice.blob.core.windows.net/badges/demos/nested-vms-in-virtual-network/FairfaxDeployment.svg)
-
-![Best Practice Check](https://azurequickstartsservice.blob.core.windows.net/badges/demos/nested-vms-in-virtual-network/BestPracticeResult.svg)
-![Cred Scan Check](https://azurequickstartsservice.blob.core.windows.net/badges/demos/nested-vms-in-virtual-network/CredScanResult.svg)
-
-![Bicep Version](https://azurequickstartsservice.blob.core.windows.net/badges/demos/nested-vms-in-virtual-network/BicepVersion.svg)
-
 This template will automate the deployment of a Virtual Machine to be a Hyper-V Host to be used for nested virtualization. Nested Virtual Machines will be able to communicate out to the internet and to other resources on your network.  Connected Azure resources can communicate with nested VMs via Azure Route Tables and multi-homed VM host routing.
 
 Modified version of this Azure [demo](https://github.com/Azure/azure-quickstart-templates/tree/master/demos/nested-vms-in-virtual-network)
@@ -24,7 +13,7 @@ This template creates the following resources by default:
 +    Public IP Address for remote access to Hyper-V Host
 +    Network Security Groups with Default Rules
 +    Route Table for Azure Virtual Machines to communicate with nested Virtual Machines
-+    DSC Extension to install Windows Features
++    DSC Extension to install Windows Features - Hyper-V Server, DHCP, RRAS & related RSAT tools.
 +    Custom Script Extension to configure Hyper-V Server
 
 Click the button below to deploy from the portal:
@@ -56,9 +45,9 @@ The environment in this guide has the below configurations. This section is inte
         + Note:  Our Hyper-V host will have a second NIC that will be used to handle the routing between the nested VMs and non-internet resources external to the Hyper-V host.
 
     + Third Subnet High Level Configuration.
-        + Name: Ghosted
+        + Name: Nested
         + Address Space: 10.0.2.0/24
-        + Note:  This will be a “floating” subnet. The address space will be consumed by our nested VMs and exists to handle route advertisements back to on-premises. No VMs will actually be deployed into this subnet.
+        + Note:  This will be a “floating” subnet. The address space will be consumed by our nested VMs and exists to handle route advertisements back to on-premises. No Azure VMs or resources will actually be deployed into this subnet.
 
     + Fourth Subnet High Level Configuration.
         + Name: Azure-VMs
