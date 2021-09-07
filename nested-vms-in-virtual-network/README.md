@@ -11,7 +11,7 @@
 
 ![Bicep Version](https://azurequickstartsservice.blob.core.windows.net/badges/demos/nested-vms-in-virtual-network/BicepVersion.svg)
 
-This template will automate the deployment of a Virtual Machine to be a Hyper-V Host to be used for nested virtualization. Nested Virtual Machines will be able to communicate out to the internet and to other resources on your network.
+This template will automate the deployment of a Virtual Machine to be a Hyper-V Host to be used for nested virtualization. Nested Virtual Machines will be able to communicate out to the internet and to other resources on your network.  Connected Azure resources can communicate with nested VMs via Azure Route Tables and multi-homed VM host routing.
 
 Modified version of this Azure [demo](https://github.com/Azure/azure-quickstart-templates/tree/master/demos/nested-vms-in-virtual-network)
 
