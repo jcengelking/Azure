@@ -79,7 +79,7 @@ The environment in this guide has the below configurations. This section is inte
     + Rule 1
         + Name: Nested-VMs
         + Destination: 10.0.0.0/24
-        + Next Hop: Virtual Appliance - 10.1.0.4
+        + Next Hop: Virtual Appliance - 10.1.1.4
 
 ## Post Deployment Steps
 
