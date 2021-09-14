@@ -1,8 +1,8 @@
 # nested-vms-with-virtual-network-routing
 
-This template will automate the deployment of a Virtual Machine to be a Hyper-V Host to be used for nested virtualization. Nested Virtual Machines will be able to communicate out to the internet and to other resources on your network.  Connected Azure resources can communicate with nested VMs via Azure Route Tables and multi-homed VM host routing.
-
 Modified version of this Azure [demo](https://github.com/Azure/azure-quickstart-templates/tree/master/demos/nested-vms-in-virtual-network)
+
+This template will automate the deployment of a Virtual Machine to be a Hyper-V Host to be used for nested virtualization. Nested Virtual Machines will be able to communicate out to the internet and to other resources on your network.  Connected Azure resources can communicate with nested VMs via Azure Route Tables and multi-homed VM host routing.
 
 The source demo may have been based on the procedure from the article [Nested VMs in Azure Virtual Networks](https://docs.microsoft.com/en-gb/virtualization/hyper-v-on-windows/user-guide/nested-virtualization-azure-virtual-network) but this link is broken.  Similar solutions can be created manually.
 
