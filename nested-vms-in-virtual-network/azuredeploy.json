@@ -46,7 +46,7 @@
     },
     "virtualNetworkAddressPrefix": {
       "type": "string",
-      "defaultValue": "10.0.0.0/21",
+      "defaultValue": "10.1.0.0/21",
       "metadata": {
         "description": "Virtual Network Address Space"
       }
@@ -60,7 +60,7 @@
     },
     "NATSubnetPrefix": {
       "type": "string",
-      "defaultValue": "10.0.1.0/24",
+      "defaultValue": "10.1.0.0/24",
       "metadata": {
         "description": "NAT Subnet Address Space"
       }
@@ -74,23 +74,9 @@
     },
     "hyperVSubnetPrefix": {
       "type": "string",
-      "defaultValue": "10.0.2.0/24",
+      "defaultValue": "10.1.1.0/24",
       "metadata": {
         "description": "Hyper-V Host Subnet Address Space"
-      }
-    },
-    "ghostedSubnetName": {
-      "type": "string",
-      "defaultValue": "Nested",
-      "metadata": {
-        "description": "Nested Subnet Name"
-      }
-    },
-    "ghostedSubnetPrefix": {
-      "type": "string",
-      "defaultValue": "10.0.0.0/24",
-      "metadata": {
-        "description": "Nested Subnet Address Space"
       }
     },
     "azureVMsSubnetName": {
@@ -102,9 +88,16 @@
     },
     "azureVMsSubnetPrefix": {
       "type": "string",
-      "defaultValue": "10.0.3.0/24",
+      "defaultValue": "10.1.2.0/24",
       "metadata": {
         "description": "Azure VMs Address Space"
+      }
+    },
+    "nestedSubnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/24",
+      "metadata": {
+        "description": "Hyper-V Nested Subnet Address Space, No Overlap Between Networks."
       }
     },
     "HostNetworkInterface1Name": {
@@ -180,7 +173,6 @@
   "variables": {
     "NATSubnetNSGName": "[format('{0}NSG', parameters('NATSubnetName'))]",
     "hyperVSubnetNSGName": "[format('{0}NSG', parameters('hyperVSubnetName'))]",
-    "ghostedSubnetNSGName": "[format('{0}NSG', parameters('ghostedSubnetName'))]",
     "azureVMsSubnetNSGName": "[format('{0}NSG', parameters('azureVMsSubnetName'))]",
     "azureVMsSubnetUDRName": "[format('{0}UDR', parameters('azureVMsSubnetName'))]",
     "DSCInstallWindowsFeaturesUri": "[uri(parameters('_artifactsLocation'), format('dsc/dscinstallwindowsfeatures.zip{0}', parameters('_artifactsLocationSasToken')))]",
@@ -213,13 +205,6 @@
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2021-02-01",
       "name": "[variables('hyperVSubnetNSGName')]",
-      "location": "[parameters('location')]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "2021-02-01",
-      "name": "[variables('ghostedSubnetNSGName')]",
       "location": "[parameters('location')]",
       "properties": {}
     },
@@ -261,15 +246,6 @@
             }
           },
           {
-            "name": "[parameters('ghostedSubnetName')]",
-            "properties": {
-              "addressPrefix": "[parameters('ghostedSubnetPrefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('ghostedSubnetNSGName'))]"
-              }
-            }
-          },
-          {
             "name": "[parameters('azureVMsSubnetName')]",
             "properties": {
               "addressPrefix": "[parameters('azureVMsSubnetPrefix')]",
@@ -286,7 +262,6 @@
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('azureVMsSubnetNSGName'))]",
         "[resourceId('Microsoft.Resources/deployments', 'udrDeploy')]",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('ghostedSubnetNSGName'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('hyperVSubnetNSGName'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('NATSubnetNSGName'))]"
       ]
@@ -392,7 +367,7 @@
           "fileUris": [
             "[variables('HVHostSetupScriptUri')]"
           ],
-          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File HVHostSetup.ps1 -NIC1IPAddress {0} -NIC2IPAddress {1} -GhostedSubnetPrefix {2} -VirtualNetworkPrefix {3}', reference(resourceId('Microsoft.Resources/deployments', 'createNic1'), '2019-10-01').outputs.assignedIp.value, reference(resourceId('Microsoft.Resources/deployments', 'createNic2'), '2019-10-01').outputs.assignedIp.value, parameters('ghostedSubnetPrefix'), parameters('virtualNetworkAddressPrefix'))]"
+          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File HVHostSetup.ps1 -NIC1IPAddress {0} -NIC2IPAddress {1} -nestedSubnetPrefix {2} -VirtualNetworkPrefix {3}', reference(resourceId('Microsoft.Resources/deployments', 'createNic1'), '2019-10-01').outputs.assignedIp.value, reference(resourceId('Microsoft.Resources/deployments', 'createNic2'), '2019-10-01').outputs.assignedIp.value, parameters('nestedSubnetPrefix'), parameters('virtualNetworkAddressPrefix'))]"
         }
       },
       "dependsOn": [
@@ -923,7 +898,7 @@
             "value": "[variables('azureVMsSubnetUDRName')]"
           },
           "addressPrefix": {
-            "value": "[parameters('ghostedSubnetPrefix')]"
+            "value": "[parameters('nestedSubnetPrefix')]"
           },
           "nextHopAddress": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'createNic2'), '2019-10-01').outputs.assignedIp.value]"
