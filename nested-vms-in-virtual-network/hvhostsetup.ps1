@@ -2,7 +2,7 @@
 param (
     [string]$NIC1IPAddress,
     [string]$NIC2IPAddress,
-    [string]$GhostedSubnetPrefix,
+    [string]$nestedSubnetPrefix,
     [string]$VirtualNetworkPrefix
 )
 
@@ -17,14 +17,11 @@ $NIC2IP = Get-NetIPAddress | Where-Object -Property AddressFamily -EQ IPv4 | Whe
 
 $NATSubnet = Get-Subnet -IP $NIC1IP.IPAddress -MaskBits $NIC1IP.PrefixLength
 $HyperVSubnet = Get-Subnet -IP $NIC2IP.IPAddress -MaskBits $NIC2IP.PrefixLength
-$NestedSubnet = Get-Subnet $GhostedSubnetPrefix
+$NestedSubnet = Get-Subnet $nestedSubnetPrefix
 $VirtualNetwork = Get-Subnet $VirtualNetworkPrefix
 
 New-NetIPAddress -IPAddress $NestedSubnet.HostAddresses[253] -PrefixLength $NestedSubnet.MaskBits -InterfaceAlias "vEthernet (NestedSwitch)"
-New-NetNat -Name "NestedSwitch" -InternalIPInterfaceAddressPrefix "$GhostedSubnetPrefix"
-
-Add-DhcpServerv4Scope -Name "Nested VMs" -StartRange $NestedSubnet.HostAddresses[1] -EndRange $NestedSubnet.HostAddresses[-1] -SubnetMask $NestedSubnet.SubnetMask
-Set-DhcpServerv4OptionValue -DnsServer 168.63.129.16 -Router $NestedSubnet.HostAddresses[0]
+New-NetNat -Name "NestedSwitch" -InternalIPInterfaceAddressPrefix "$nestedSubnetPrefix"
 
 Install-RemoteAccess -VpnType RoutingOnly
 cmd.exe /c "netsh routing ip nat install"
