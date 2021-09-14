@@ -1,6 +1,6 @@
 # nested-vms-with-virtual-network-routing
 
-Modified version of this Azure [demo](https://github.com/Azure/azure-quickstart-templates/tree/master/demos/nested-vms-in-virtual-network)
+Modified version of this Azure [demo](https://github.com/Azure/azure-quickstart-templates/tree/master/demos/nested-vms-in-virtual-network).  The network addresses have been re-arranged to support the 10.0.0.0/24 network in the Windows 10/Office 365 [lab kit](https://www.microsoft.com/en-us/evalcenter/evaluate-lab-kit).
 
 This template will automate the deployment of a Virtual Machine to be a Hyper-V Host to be used for nested virtualization. Nested Virtual Machines will be able to communicate out to the internet and to other resources on your network.  Connected Azure resources can communicate with nested VMs via Azure Route Tables and multi-homed VM host routing.
 
@@ -31,22 +31,22 @@ The environment in this guide has the below configurations. This section is inte
 1. Azure Virtual Network Information.
     + VNet High Level Configuration.
         + Name: Nested-Fun
-        + Address Space: 10.0.0.0/22
+        + Address Space: 10.0.0.0/21
         + Note: This will be made up of four Subnets. Also, these ranges are not set in stone. Feel free to address your environment however you want.
 
     + First Subnet High Level Configuration.
         + Name: NAT
-        + Address Space: 10.0.0.0/24
+        + Address Space: 10.0.1.0/24
         + Note: This is where our Hyper-V hosts primary NIC resides. This will be used to handle outbound NAT for the nested VMs. It will be the gateway to the internet for your nested VMs.
 
     + Second Subnet High Level Configuration.
         + Name: Hyper-V-LAN
-        + Address Space: 10.0.1.0/24
+        + Address Space: 10.0.2.0/24
         + Note:  Our Hyper-V host will have a second NIC that will be used to handle the routing between the nested VMs and non-internet resources external to the Hyper-V host.
 
     + Third Subnet High Level Configuration.
         + Name: Nested
-        + Address Space: 10.0.2.0/24
+        + Address Space: 10.0.0.0/24
         + Note:  This will be a “floating” subnet. The address space will be consumed by our nested VMs and exists to handle route advertisements back to on-premises. No Azure VMs or resources will actually be deployed into this subnet.
 
     + Fourth Subnet High Level Configuration.
@@ -56,29 +56,29 @@ The environment in this guide has the below configurations. This section is inte
 
 2. Our Hyper-V host has the below NIC configurations.
     + Primary NIC
-        + IP Address: 10.0.0.4
+        + IP Address: 10.0.1.4
         + Subnet Mask: 255.255.255.0
         + Default Gateway: 10.0.0.1
         + DNS: Configured for DHCP
         + IP Forwarding Enabled: No
 
     + Secondary NIC
-        + IP Address: 10.0.1.4
+        + IP Address: 10.0.2.4
         + Subnet Mask: 255.255.255.0
         + Default Gateway: Empty
         + DNS: Configured for DHCP
         + IP Forwarding Enabled: Yes
 
     + Hyper-V Created NIC for Internal Virtual Switch
-        + IP Address: 10.0.2.1
+        + IP Address: 10.0.0.254
         + Subnet Mask: 255.255.255.0
         + Default Gateway: Empty
 
 3. Our Route Table will have a single rule.
     + Rule 1
         + Name: Nested-VMs
-        + Destination: 10.0.2.0/24
-        + Next Hop: Virtual Appliance - 10.0.1.4
+        + Destination: 10.0.0.0/24
+        + Next Hop: Virtual Appliance - 10.0.2.4
 
 ## Post Deployment Steps
 
