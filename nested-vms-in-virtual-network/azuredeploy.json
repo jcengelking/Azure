@@ -46,7 +46,7 @@
     },
     "virtualNetworkAddressPrefix": {
       "type": "string",
-      "defaultValue": "10.0.0.0/16",
+      "defaultValue": "10.0.0.0/21",
       "metadata": {
         "description": "Virtual Network Address Space"
       }
@@ -60,7 +60,7 @@
     },
     "NATSubnetPrefix": {
       "type": "string",
-      "defaultValue": "10.0.0.0/24",
+      "defaultValue": "10.0.1.0/24",
       "metadata": {
         "description": "NAT Subnet Address Space"
       }
@@ -74,7 +74,7 @@
     },
     "hyperVSubnetPrefix": {
       "type": "string",
-      "defaultValue": "10.0.1.0/24",
+      "defaultValue": "10.0.2.0/24",
       "metadata": {
         "description": "Hyper-V Host Subnet Address Space"
       }
@@ -88,7 +88,7 @@
     },
     "ghostedSubnetPrefix": {
       "type": "string",
-      "defaultValue": "10.0.2.0/24",
+      "defaultValue": "10.0.0.0/24",
       "metadata": {
         "description": "Nested Subnet Address Space"
       }
@@ -131,7 +131,7 @@
     },
     "HostVirtualMachineSize": {
       "type": "string",
-      "defaultValue": "Standard_D4s_v3",
+      "defaultValue": "Standard_D8s_v4",
       "allowedValues": [
         "Standard_D8s_v4",
         "Standard_D2_v3",
